@@ -6,10 +6,10 @@ class ant():
         self.x = x
         self.food = False
             
-    def move(self):
-        self.y = min(max(self.y + random.randrange(-1,2,1), 0), 98)
-        self.x = min(max(self.x + random.randrange(-1,2,1), 0), 98)
+    def move(self,size : tuple):
+        self.y = min(max(self.y + random.randrange(-1,2,1), 0), size[0] - 1)
+        self.x = min(max(self.x + random.randrange(-1,2,1), 0), size[1] - 1)
         
         
     def getParam(self):
-        return {'x':self.x, 'y':self.y, 'food':self.food}
+        return {'y':self.y , 'x':self.x, 'food':self.food}
