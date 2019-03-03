@@ -11,7 +11,7 @@ class poi(object): # point of interest
         return {'y' : self.y, 'x' : self.x}
     
 class univers(object):
-    def __init__(self,uniY : int, uniX : int, population : int = 100):
+    def __init__(self,uniY : int, uniX : int, population : int = 100, exhaust : int = 10000):
         self.world = np.array(np.zeros((uniY,uniX)))
         
         self.ant_position = np.array(np.zeros((uniY,uniX)))
@@ -23,6 +23,9 @@ class univers(object):
         
         self.population = []
         self.maxPop = population 
+        self.exhaust = exhaust
+        self.score = 0
+        self.scoreList = []
     
     def antBirth(self):
         if self.maxPop > len(self.population):
@@ -45,7 +48,8 @@ class univers(object):
             else:
                 self.path_from_food[a.y, a.x] = min(self.path_from_food[a.y, a.x] + max(min(255,  255 - (a.step // 4)),0),255)  
             self.ant_position[a.y, a.x] = 255
-        #self.population=[a for a in self.population if a.step < 100]
+        self.population=[a for a in self.population if a.step < self.exhaust]
+        self.path_from_home[self.home.y, self.home.x] = 255
     
     def applyTime(self, speed : int, frame : int, power : int):
         self.antBirth()
@@ -53,4 +57,5 @@ class univers(object):
         self.path_from_food = self.timeFly_v(self.path_from_food, speed, frame, power)
         self.moveAll()
         self.showAll()
+        self.scoreList.append(self.score)
 

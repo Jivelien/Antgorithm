@@ -2,7 +2,7 @@ import random
 import numpy as np
 
 global BLANK_WEIGHT
-BLANK_WEIGHT = 50
+BLANK_WEIGHT = 25
 
 class ant(object):
     def __init__(self,x = 50, y=50):
@@ -41,11 +41,10 @@ class ant(object):
         #self.x = min(max(self.x + random.randrange(-1,2,1), 0), size[1] - 1)
                 
         if not self.food and univers.food.x == self.x and univers.food.y == self.y:  
-            print('I find the food ! x: {}, y:{} in {} steps'.format(self.x,self.y, self.step))
             self.step = 0
             self.food = True
         elif self.food and univers.home.x == self.x and univers.home.y == self.y:
-            print('I find home ! x: {}, y:{} in {} steps'.format(self.x,self.y, self.step))
+            univers.score +=1
             self.step = 0
             self.food = False          
         else:

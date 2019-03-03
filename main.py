@@ -1,12 +1,13 @@
 import cv2
-import numpy as np
-from time import sleep
 from univers import univers
+from matplotlib import pyplot as plt
 
 def main():
     cv2.startWindowThread()
     
-    u = univers(200,200,1000)
+    u = univers(100,100,
+                population = 1000,
+                exhaust = 3000)
     
     cBLUE=0
     cGREEN=1
@@ -14,25 +15,18 @@ def main():
     
     i=0
     while True:
-        u.applyTime(5, i, 1)
+        u.applyTime(3, i, 1)
         
         posAnt = u.ant_position.astype('uint8')
-        posAnt = cv2.cvtColor(posAnt, cv2.COLOR_GRAY2RGB)
-        posAnt[:,:,cBLUE]=0
-        posAnt[:,:,cGREEN]=0
-        
         pathHome = u.path_from_home.astype('uint8')
-        pathHome = cv2.cvtColor(pathHome,cv2.COLOR_GRAY2RGB)
-        pathHome[:,:,cRED]=0
-        pathHome[:,:,cGREEN]=0
-        
         pathFood = u.path_from_food.astype('uint8')
-        pathFood = cv2.cvtColor(pathFood,cv2.COLOR_GRAY2RGB)
-        pathFood[:,:,cRED]=0
-        pathFood[:,:,cBLUE]=0
         
-        canva = cv2.add(pathFood,pathHome)
-        canva = cv2.add(canva, posAnt)
+        canva = cv2.cvtColor(u.world.astype('uint8'), cv2.COLOR_GRAY2RGB)
+        #canva[:,:,cRED]     = posAnt
+        canva[:,:,cBLUE]    = pathHome
+        canva[:,:,cGREEN]   = pathFood
+        
+        cv2.putText(canva, str(u.score), (10,10), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (255,255,255), 1)
         
         cv2.imshow('Anthology', cv2.resize(canva,(900,900),interpolation = 0)) #canvaPic)
         #cv2.imshow('Anthology', cv2.resize(path,(900,900),interpolation = 0)) #canvaPic)
@@ -43,8 +37,10 @@ def main():
             break
         i += 1
     #sleep(1/1000)
+    return u
 
-main()
+u = main()
+plt.plot(u.scoreList)
 
 # 0: blue
 # 1: vertq
