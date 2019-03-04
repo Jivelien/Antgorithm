@@ -2,10 +2,10 @@ import random
 import numpy as np
 
 global BLANK_WEIGHT
-BLANK_WEIGHT = 25
+BLANK_WEIGHT = 5
 
 class ant(object):
-    def __init__(self,x = 50, y=50):
+    def __init__(self,y = 50, x=50):
         self.y = y
         self.x = x
         self.food = False
@@ -16,8 +16,8 @@ class ant(object):
         neighbour = path_map[
                     max(self.y-1, 0):min(self.y +2,size[0]),
                     max(self.x-1, 0):min(self.x +2,size[1])
-                    ]
-        weightNeighbour = (neighbour + blank_weight )
+                    ].astype('int')
+        weightNeighbour = neighbour * neighbour + blank_weight
         weightNeighbour = weightNeighbour / weightNeighbour.sum()
         neighbourRow = neighbour.reshape(neighbour.size)     
         weightNeighbourRow = weightNeighbour.reshape(neighbour.size)
@@ -33,20 +33,21 @@ class ant(object):
     
     def move(self, univers):
         if not self.food:
-            self.nextPosition(univers.path_from_food, 50)
+            self.nextPosition(univers.path_from_food)
         else:
-            self.nextPosition(univers.path_from_home, 50)
+            self.nextPosition(univers.path_from_home)
             
         #self.y = min(max(self.y + random.randrange(-1,2,1), 0), size[0] - 1)
         #self.x = min(max(self.x + random.randrange(-1,2,1), 0), size[1] - 1)
                 
-        if not self.food and univers.food.x == self.x and univers.food.y == self.y:  
-            self.step = 0
-            self.food = True
-        elif self.food and univers.home.x == self.x and univers.home.y == self.y:
-            univers.score +=1
-            self.step = 0
-            self.food = False          
+        if univers.food.x == self.x and univers.food.y == self.y:  
+                self.step = 0
+                self.food = True
+        elif univers.home.x == self.x and univers.home.y == self.y:
+                if self.food:
+                    univers.score +=1
+                self.step = 0
+                self.food = False          
         else:
                 self.step += 1
         
