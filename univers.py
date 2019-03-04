@@ -12,12 +12,12 @@ class poi(object): # point of interest
     
 class univers(object):
     def __init__(self,uniY : int, 
-                 uniX : int, 
+                 uniX : int,
+                 antConfig : dict,
                  population : int = 100, 
                  exhaust : int = 10000, 
                  stepWeight : int = 75, 
-                 weightLostByStep : int = 5,
-                 antConfig : dict):
+                 weightLostByStep : int = 5):
         self.world = np.array(np.zeros((uniY,uniX)))
         
         self.ant_position = np.array(np.zeros((uniY,uniX)))
