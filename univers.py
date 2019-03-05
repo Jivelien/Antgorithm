@@ -13,11 +13,12 @@ class poi(object): # point of interest
 class univers(object):
     def __init__(self,uniY : int, 
                  uniX : int,
-                 antConfig : dict,
                  population : int = 100, 
                  exhaust : int = 10000, 
                  stepWeight : int = 75, 
-                 weightLostByStep : int = 5):
+                 weightLostByStep : int = 5,
+                 lostEachEpoch : int = 1,
+                 lostPower : int = 1):
         self.world = np.array(np.zeros((uniY,uniX)))
         
         self.ant_position = np.array(np.zeros((uniY,uniX)))
@@ -34,16 +35,22 @@ class univers(object):
         self.scoreList = []
         self.stepWeight = stepWeight
         self.weightLostByStep = weightLostByStep
-        self.antConfig = antConfig
-    
+        
+        self.age = 0
+        self.timeFly_v=np.vectorize(self.timeFly)
+        
+        self.lostEachEpoch = lostEachEpoch
+        self.lostPower = lostPower
+        
+        
     def antBirth(self):
         if self.maxPop > len(self.population):
             self.population.append(ant(self.home.y, self.home.x))
     
     
-    def timeFly(value : int, speed : int, frame : int, power : int):
-        return max(value - int(frame%speed == 0) * power, 0)
-    timeFly_v=np.vectorize(timeFly)
+    def timeFly(self, value : int):
+        return max(value - int(self.age % self.lostEachEpoch == 0) * self.lostPower, 0)
+    
 
     def moveAll(self):
         for a in self.population:
@@ -62,11 +69,12 @@ class univers(object):
         self.path_from_home[self.home.y, self.home.x] = 255
         self.path_from_food[self.food.y, self.food.x] = 255
     
-    def applyTime(self, speed : int, frame : int, power : int):
+    def applyTime(self):
         self.antBirth()
-        self.path_from_home = self.timeFly_v(self.path_from_home, speed, frame, power)
-        self.path_from_food = self.timeFly_v(self.path_from_food, speed, frame, power)
+        self.path_from_home = self.timeFly_v(self.path_from_home)
+        self.path_from_food = self.timeFly_v(self.path_from_food)
         self.moveAll()
         self.showAll()
         self.scoreList.append(self.score)
+        self.age += 1
 

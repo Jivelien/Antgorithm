@@ -7,21 +7,18 @@ def main():
     
     universY=100
     universX=int(universY*16/9)
-    
-    antConfig = {}
-    
+       
     univParam = {'uniY' : universY, 
-                 'uniX' : universX, 
-                 'population' : 1000, 
-                 'exhaust' : 2000, 
-                 'stepWeight' : 75, 
-                 'weightLostByStep' :5,
-                 'antConfig' : antConfig}
+             'uniX' : universX, 
+             'population' : 100000, 
+             'exhaust' : 1000, 
+             'stepWeight' : 75, 
+             'weightLostByStep' :5,
+             'lostEachEpoch' : 1,
+             'lostPower' : 1}
+
 
     u = univers(**univParam)
-    
-    u.food.y = 25
-    u.food.x = 45
     
     cBLUE=0
     cGREEN=1
@@ -30,9 +27,9 @@ def main():
     cv2.namedWindow("Anthology", cv2.WND_PROP_FULLSCREEN)
     cv2.setWindowProperty("Anthology",cv2.WND_PROP_FULLSCREEN,cv2.WINDOW_FULLSCREEN)
 
-    i=0
+
     while True:
-        u.applyTime(1, i, 1)
+        u.applyTime()
         
         posAnt = u.ant_position.astype('uint8')
         pathHome = u.path_from_home.astype('uint8')
@@ -53,7 +50,6 @@ def main():
         if k == ord('q'):
             cv2.destroyAllWindows()
             break
-        i += 1
     #sleep(1/1000)
     return u
 
@@ -69,10 +65,8 @@ def nothing():
     u.food.y = 25
     u.food.x = 45
     try:
-        i=0
         while True:
-            i+=1
-            u.applyTime(1, i, 1)
+            u.applyTime(1, 1)
     except:
         plt.subplot(2,1,1)
         plt.plot(u.scoreList)
