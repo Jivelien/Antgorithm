@@ -1,6 +1,8 @@
-import numpy as np
 from ant import ant
+
+import numpy as np
 from random import randrange
+import threading
 
 class poi(object): # point of interest
     def __init__(self, y : int, x : int):
@@ -23,7 +25,9 @@ class univers(object):
         
         self.ant_position = np.array(np.zeros((uniY,uniX)))
         self.path_from_home = np.array(np.zeros((uniY,uniX)))
+        self.path_from_homeList = []
         self.path_from_food = np.array(np.zeros((uniY,uniX)))
+        self.path_from_foodList = []
         
         self.food = poi(randrange(0,uniY), randrange(0,uniX))
         self.home = poi(int(uniY/2), int(uniX/2))
@@ -43,7 +47,7 @@ class univers(object):
         self.lostPower = lostPower
         
         
-    def antBirth(self):
+    def antBirth(self): # TODO readressage fourmi quand morte
         if self.maxPop > len(self.population):
             self.population.append(ant(self.home.y, self.home.x))
     
@@ -54,8 +58,8 @@ class univers(object):
 
     def moveAll(self):
         for a in self.population:
-            a.move(self)
-    
+            threading.Thread(target=a.move, args=[self]).start()
+                             
     def showAll(self):
         self.ant_position[:, :] = 0
         for a in self.population:
@@ -76,5 +80,7 @@ class univers(object):
         self.moveAll()
         self.showAll()
         self.scoreList.append(self.score)
+        self.path_from_foodList.append(self.path_from_food)
+        self.path_from_homeList.append(self.path_from_home)
         self.age += 1
 
