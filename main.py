@@ -1,6 +1,7 @@
 import cv2
 from univers import univers
 from matplotlib import pyplot as plt
+import random as ran 
 
 def main():
     cv2.startWindowThread()
@@ -9,19 +10,16 @@ def main():
     universX=int(universY*16/9)
        
     univParam = {'uniY' : universY, 
-             'uniX' : universX, 
-             'population' : 500, 
-             'exhaust' : 1000, 
-             'stepWeight' : 75, 
-             'weightLostByStep' :10,
-             'lostEachEpoch' : 5,
-             'lostPower' : 5}
-
+                 'uniX' : universX, 
+                 'population' : ran.randrange(100,5000), 
+                 'exhaust' : ran.randrange(1000,10000), 
+                 'stepWeight' : ran.randrange(10,255), 
+                 'weightLostByStep' : ran.randrange(1,10),
+                 'lostEachEpoch' : ran.randrange(1,10),
+                 'lostPower' : ran.randrange(1,10)}
 
     u = univers(**univParam)
-
-    u.food.y = 45
-    u.food.x = 65    
+   
     cBLUE=0
     cGREEN=1
     cRED=2

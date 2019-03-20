@@ -1,13 +1,17 @@
 from univers import univers
+
 from matplotlib import pyplot as plt
 import pandas as pd
 import random as ran
 import matplotlib.gridspec as gridspec 
 import threading
+import time
 
-global resultSet, universList, attributList
+global resultSet, universList, attributList, listAge, t
 resultSet = pd.DataFrame()
 universList = []
+listAge=[] 
+t=time.time()
 
 def createRandomUnivers():
     universY=100
@@ -30,21 +34,21 @@ def runTime(u : univers, epoch : int):
     for i in range(epoch):
         u.applyTime()
 
-def getResult(u, univParam):
-    attr = [getattr(u, att) for att in attributList]
-    df = pd.DataFrame.from_records([attr], columns=attributList)
-    df['univ']= u 
-    return df
     
 def iteration():
-    global resultSet, universList
+    global resultSet, universList, attributList
     u, univParam = createRandomUnivers()
     universList.append(u)
     print('Started')
     runTime(u, 25000)
-    result = getResult(u, univParam)
-    resultSet = resultSet.append(result)
-    resultSet.to_csv('result.csv')
+    
+    attr = [getattr(u, att) for att in attributList]
+    df = pd.DataFrame.from_records([attr], columns=attributList)
+    df['univ']= u 
+    
+    resultSet = resultSet.append(df)
+    resultSet.to_csv('result6.csv')
+    
     print('Finish')
 
 def launchUni():
@@ -52,50 +56,75 @@ def launchUni():
     for t in threading.enumerate():
         if "univers" in t.name:
             uni+=1
-    if uni < 0:
+    if uni < 1:
         threading.Thread(target=iteration, name = 'univers'+str(len(universList))).start() 
-            
+    time.sleep(60)
+     
 def maxUni():
     while 1:
         launchUni()
 
-            
+def showInfo():
+    global t, listAge
+    listAgePast = listAge
+    listAge     = [] 
+    i           = 0
+    t1          = t
+    t           = time.time()
+    tim         = t-t1
+    print('Time since last check: {} min'.format(int(tim/60)))
+    for u in universList:
+        #if u.age != 25000 : 
+        listAge.append(u.age)
+        try:
+            iterPerMin = (u.age-listAgePast[i])/tim*60
+            timeRemain = (25000-u.age)/iterPerMin
+        except:
+            iterPerMin = 0
+            timeRemain = 0
+        msg = "age : {}".format(u.age) 
+        msg += "\tmaxPop : {}".format(u.maxPop) 
+        msg += "  \tscore : {}".format(u.score)
+        msg += "\ttime remain : {} min".format(int(timeRemain))
+        print(msg)
+        i+=1
+
+def graph(figsize = (9,4)):    
+    plt.figure(dpi = 150)
+    plt.figure(figsize = figsize)
+    gs1 = gridspec.GridSpec(len(universList)//3 +1,3)
+    gs1.update(wspace=0, hspace=0)
+    for i in range(len(universList)):
+        ax1 = plt.subplot(gs1[i])
+        ax1.set_xticklabels([])
+        ax1.set_yticklabels([])
+        plt.imshow(universList[i].path_from_food + universList[i].path_from_home)
+        plt.text(5, 10, "Score : " + str(universList[i].score), color = 'white')
+        plt.text(5, 95, "Age : " + str(universList[i].age), color = 'white')
+
+         
 threading.Thread(target=maxUni, name = 'univLauncher').start()
-
-
-# -----------------------------------------------------------
 fu,_ = createRandomUnivers()
 attributList = [attr for attr in dir(fu) if not callable(getattr(fu, attr)) and not attr.startswith("__")]
 
+
+# -----------------------------------------------------------
 threading.enumerate()
-threading.active_count()
 
-listAge=[] 
-for u in universList:
-    if u.age != 25000 : 
-        listAge.append(u.age)
-        print("age : " + str(u.age) + '\t - maxPop : ' +str(u.maxPop) + "   \t - score : " + str(u.score))
-  
+showInfo()
 
+graph((9,6))
 
-plt.figure(dpi = 150)
-plt.figure(figsize = (9,12))
-gs1 = gridspec.GridSpec(len(universList)//3 +1,3)
-gs1.update(wspace=0, hspace=0)
-for i in range(len(universList)):
-    ax1 = plt.subplot(gs1[i])
-    ax1.set_xticklabels([])
-    ax1.set_yticklabels([])
-    fig = plt.imshow(universList[i].path_from_food + universList[i].path_from_home)
- 
-    
 resultSet = pd.DataFrame()
-bypass = True
+bypass = False
 for u in universList:
     if u.age == 25000 or bypass == True: 
         attr = [getattr(u, att) for att in attributList]
         df = pd.DataFrame.from_records([attr], columns=attributList)
         df['univ']= u 
         resultSet = resultSet.append(df)
+resultSet.to_csv('result6.csv')
 
-resultSet.to_csv('result.csv')
+
+df = pd.read_csv('result5.csv')
+concat = pd.read_csv('resultConcat.csv')

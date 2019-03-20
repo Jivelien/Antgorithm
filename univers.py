@@ -2,7 +2,9 @@ from ant import ant
 
 import numpy as np
 from random import randrange
+import array
 import threading
+import time
 
 class poi(object): # point of interest
     def __init__(self, y : int, x : int):
@@ -36,7 +38,10 @@ class univers(object):
         self.maxPop = population 
         self.exhaust = exhaust
         self.score = 0
-        self.scoreList = []
+        self.scoreList = array.array('L')
+        
+        self.timeList = array.array('f')
+        
         self.stepWeight = stepWeight
         self.weightLostByStep = weightLostByStep
         
@@ -47,7 +52,7 @@ class univers(object):
         self.lostPower = lostPower
         
         
-    def antBirth(self): # TODO readressage fourmi quand morte
+    def antBirth(self):
         if self.maxPop > len(self.population):
             self.population.append(ant(self.home.y, self.home.x))
     
@@ -69,7 +74,12 @@ class univers(object):
                 self.path_from_food[a.y, a.x] = min(self.path_from_food[a.y, a.x] + max(min(255,  self.stepWeight - (a.step // self.weightLostByStep)),0),255)  
             self.ant_position[a.y, a.x] = max(self.ant_position[a.y, a.x] + 50, 255) #255
             
-        self.population=[a for a in self.population if a.step < self.exhaust]
+        #self.population=[a for a in self.population if a.step < self.exhaust]
+        #FIX toutes les fourmis mortes reviennent en même temps
+        for i in range(len(self.population)):
+            if self.population[i].step > self.exhaust:
+                self.population[i] = ant(self.home.y, self.home.x)
+            
         self.path_from_home[self.home.y, self.home.x] = 255
         self.path_from_food[self.food.y, self.food.x] = 255
     
@@ -80,7 +90,8 @@ class univers(object):
         self.moveAll()
         self.showAll()
         self.scoreList.append(self.score)
-        self.path_from_foodList.append(self.path_from_food)
-        self.path_from_homeList.append(self.path_from_home)
+        self.timeList.append(time.time())
+        #self.path_from_foodList.append(self.path_from_food)
+        #self.path_from_homeList.append(self.path_from_home)
         self.age += 1
 
