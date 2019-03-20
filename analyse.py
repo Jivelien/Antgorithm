@@ -12,6 +12,7 @@ resultSet = pd.DataFrame()
 universList = []
 listAge=[] 
 t=time.time()
+continuData = True
 
 def createRandomUnivers():
     universY=100
@@ -50,19 +51,7 @@ def iteration():
     resultSet.to_csv('result6.csv')
     
     print('Finish')
-
-def launchUni():
-    uni = 0
-    for t in threading.enumerate():
-        if "univers" in t.name:
-            uni+=1
-    if uni < 1:
-        threading.Thread(target=iteration, name = 'univers'+str(len(universList))).start() 
-    time.sleep(60)
-     
-def maxUni():
-    while 1:
-        launchUni()
+    if continuData: iteration()
 
 def showInfo():
     global t, listAge
@@ -102,17 +91,14 @@ def graph(figsize = (9,4)):
         plt.text(5, 10, "Score : " + str(universList[i].score), color = 'white')
         plt.text(5, 95, "Age : " + str(universList[i].age), color = 'white')
 
-         
-threading.Thread(target=maxUni, name = 'univLauncher').start()
 fu,_ = createRandomUnivers()
 attributList = [attr for attr in dir(fu) if not callable(getattr(fu, attr)) and not attr.startswith("__")]
-
+iteration()
 
 # -----------------------------------------------------------
 threading.enumerate()
 
 showInfo()
-
 graph((9,6))
 
 resultSet = pd.DataFrame()
