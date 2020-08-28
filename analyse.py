@@ -12,7 +12,7 @@ resultSet = pd.DataFrame()
 universList = []
 listAge=[] 
 t=time.time()
-continuData = True
+continuData = False
 
 def createRandomUnivers():
     universY=100
@@ -38,18 +38,20 @@ def runTime(u : univers, epoch : int):
     
 def iteration():
     global resultSet, universList, attributList
-    u, univParam = createRandomUnivers()
-    universList.append(u)
-    print('Started')
-    runTime(u, 25000)
-    
-    attr = [getattr(u, att) for att in attributList]
-    df = pd.DataFrame.from_records([attr], columns=attributList)
-    df['univ']= u 
-    
-    resultSet = resultSet.append(df)
-    resultSet.to_csv('result6.csv')
-    
+    try:
+        u, univParam = createRandomUnivers()
+        universList.append(u)
+        print('Started')
+        runTime(u, 25000)
+        
+        attr = [getattr(u, att) for att in attributList]
+        df = pd.DataFrame.from_records([attr], columns=attributList)
+        df['univ']= u 
+        
+        resultSet = resultSet.append(df)
+        resultSet.to_csv('result8.csv')
+    except Exception:
+        print(Exception)
     print('Finish')
     if continuData: iteration()
 
@@ -68,13 +70,15 @@ def showInfo():
         try:
             iterPerMin = (u.age-listAgePast[i])/tim*60
             timeRemain = (25000-u.age)/iterPerMin
+            fullTime =  (25000)/iterPerMin
         except:
             iterPerMin = 0
             timeRemain = 0
+            fullTime = 0
         msg = "age : {}".format(u.age) 
         msg += "\tmaxPop : {}".format(u.maxPop) 
         msg += "  \tscore : {}".format(u.score)
-        msg += "\ttime remain : {} min".format(int(timeRemain))
+        msg += "\ttime remain : {}/{} min".format(int(timeRemain),int(fullTime))
         print(msg)
         i+=1
 
@@ -93,24 +97,24 @@ def graph(figsize = (9,4)):
 
 fu,_ = createRandomUnivers()
 attributList = [attr for attr in dir(fu) if not callable(getattr(fu, attr)) and not attr.startswith("__")]
-iteration()
+
+threading.Thread(target=iteration).start()
 
 # -----------------------------------------------------------
-threading.enumerate()
 
 showInfo()
 graph((9,6))
 
-resultSet = pd.DataFrame()
-bypass = False
-for u in universList:
-    if u.age == 25000 or bypass == True: 
-        attr = [getattr(u, att) for att in attributList]
-        df = pd.DataFrame.from_records([attr], columns=attributList)
-        df['univ']= u 
-        resultSet = resultSet.append(df)
-resultSet.to_csv('result6.csv')
-
-
-df = pd.read_csv('result5.csv')
-concat = pd.read_csv('resultConcat.csv')
+#resultSet = pd.DataFrame()
+#bypass = False
+#for u in universList:
+#    if u.age == 25000 or bypass == True: 
+#        attr = [getattr(u, att) for att in attributList]
+#        df = pd.DataFrame.from_records([attr], columns=attributList)
+#        df['univ']= u 
+#        resultSet = resultSet.append(df)
+#resultSet.to_csv('result6.csv')
+#
+#
+#df = pd.read_csv('result8.csv')
+#concat = pd.read_csv('resultConcat.csv')

@@ -15,8 +15,8 @@ class ant(object):
     def nextPosition(self, path_map, blank_weight = 5):
         size= path_map.shape
         neighbour = path_map[
-                    max(self.y-1, 0):min(self.y +2,size[0]),
-                    max(self.x-1, 0):min(self.x +2,size[1])
+                    max(self.y-1, 0):min(self.y +2,size[0]-1),
+                    max(self.x-1, 0):min(self.x +2,size[1]-1)
                     ].astype('int')
         
         wNeighbour = self.weightSelect(neighbour) + blank_weight

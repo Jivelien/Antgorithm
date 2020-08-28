@@ -11,7 +11,7 @@ def main():
        
     univParam = {'uniY' : universY, 
                  'uniX' : universX, 
-                 'population' : ran.randrange(100,5000), 
+                 'population' : 500, #ran.randrange(100,5000), 
                  'exhaust' : ran.randrange(1000,10000), 
                  'stepWeight' : ran.randrange(10,255), 
                  'weightLostByStep' : ran.randrange(1,10),
@@ -19,7 +19,9 @@ def main():
                  'lostPower' : ran.randrange(1,10)}
 
     u = univers(**univParam)
-   
+   # u.food.y = 15
+   # u.food.x = 15
+    
     cBLUE=0
     cGREEN=1
     cRED=2
