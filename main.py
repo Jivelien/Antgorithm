@@ -4,22 +4,20 @@ import cv2
 import numpy as np
 
 from antgorithm.ant import Ant
-from antgorithm.ant_brain.ant_brain import RandomAntBrain
+from antgorithm.ant_brain.ant_brain import RandomAntBrain, DummyAntBrain
 
 
-def visualisation_biscuit():
+def visualisation_biscuit(nb_ant: int):
     cv2.startWindowThread()
 
     cv2.namedWindow("Anthology", cv2.WND_PROP_ASPECT_RATIO)
     cv2.setWindowProperty("Anthology", cv2.WND_PROP_ASPECT_RATIO, cv2.WINDOW_GUI_EXPANDED)
 
-    nb_ant = 50
-
-    ants = [Ant(ant_brain=RandomAntBrain(angle=15)) for _ in range(nb_ant)]
+    ants = [Ant(ant_brain=RandomAntBrain(angle=2)) for _ in range(nb_ant)]
+    # ants = [Ant(ant_brain=DummyAntBrain()) for _ in range(nb_ant)]
     for i, ant in enumerate(ants):
         ant.rotate(randint(0, 360))
 
-    max_rotation = 5
     colors = [(randint(0, 255), randint(0, 255), randint(0, 255)) for _ in range(nb_ant)]
 
     canva_x = 2000
@@ -42,4 +40,4 @@ def visualisation_biscuit():
 
 
 if __name__ == '__main__':
-    visualisation_biscuit()
+    visualisation_biscuit(500)
