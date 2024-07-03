@@ -13,7 +13,10 @@ def visualisation_biscuit():
     cv2.namedWindow("Anthology", cv2.WND_PROP_ASPECT_RATIO)
     cv2.setWindowProperty("Anthology", cv2.WND_PROP_ASPECT_RATIO, cv2.WINDOW_GUI_EXPANDED)
 
-    ants = [Ant(position=Position(x=0, y=0)) for _ in range(100)]
+    nb_ant=100
+
+    ants = [Ant(position=Position(x=0, y=0)) for _ in range(nb_ant)]
+    colors = [(randint(0,255),randint(0,255),randint(0,255)) for _ in range(nb_ant)]
 
     canva_x = 2000
     canva_y = 2000
@@ -21,13 +24,13 @@ def visualisation_biscuit():
         world = np.array(np.zeros((canva_x, canva_y)))
         canva = cv2.cvtColor(world.astype('uint8'), cv2.COLOR_GRAY2RGB)
 
-        for ant in ants:
-            ant.rotate(angle=randint(-5, 5))
+        for i, ant in enumerate(ants):
+            ant.rotate(angle=randint(-15, 15))
             ant.move()
             x = int(ant.position.x + canva_x/2)%canva_x
             y = int(ant.position.y + canva_y/2)%canva_y
 
-            cv2.circle(canva, center=(x,y), radius=10, color=(0,0,255), thickness=5)
+            cv2.circle(canva, center=(x,y), radius=10, color=colors[i], thickness=5)
         cv2.imshow('Anthology', canva)
         k = cv2.waitKey(1) & 0xFF
         if k == ord('q'):
