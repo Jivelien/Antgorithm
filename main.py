@@ -11,16 +11,17 @@ def main():
        
     univParam = {'uniY' : universY, 
                  'uniX' : universX, 
-                 'population' : 500, #ran.randrange(100,5000), 
-                 'exhaust' : ran.randrange(1000,10000), 
-                 'stepWeight' : ran.randrange(10,255), 
-                 'weightLostByStep' : ran.randrange(1,10),
-                 'lostEachEpoch' : ran.randrange(1,10),
-                 'lostPower' : ran.randrange(1,10)}
+                 'population' : 2000, #ran.randrange(100,5000),
+                 # 'exhaust' : ran.randrange(1000,10000),
+                 # 'stepWeight' : ran.randrange(10,255),
+                 # 'weightLostByStep' : ran.randrange(1,10),
+                 # 'lostEachEpoch' : ran.randrange(1,10),
+                 # 'lostPower' : ran.randrange(1,10)
+                 }
 
     u = univers(**univParam)
-   # u.food.y = 15
-   # u.food.x = 15
+    u.food.y = 50
+    u.food.x = 60
     
     cBLUE=0
     cGREEN=1
@@ -38,7 +39,7 @@ def main():
         pathFood = u.path_from_food.astype('uint8')
         
         canva = cv2.cvtColor(u.world.astype('uint8'), cv2.COLOR_GRAY2RGB)
-        #canva[:,:,cRED]     = posAnt
+        canva[:,:,cRED]     = posAnt
         canva[:,:,cBLUE]    = pathHome
         canva[:,:,cGREEN]   = pathFood
         canva[u.food.y, u.food.x, cRED] = 255
