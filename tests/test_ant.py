@@ -2,9 +2,9 @@ from __future__ import annotations
 
 import unittest
 
-from anthgorithm.ant import Ant
-from anthgorithm.ant_brain.ant_brain import AntBrain
-from anthgorithm.position import Position
+from antgorithm.ant import Ant
+from antgorithm.ant_brain.ant_brain import AntBrain
+from antgorithm.position import Position
 
 
 class StubAntBrain(AntBrain):

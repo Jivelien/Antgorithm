@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import unittest
 
-from anthgorithm.position import Position
+from antgorithm.position import Position
 
 
 class PositionTest(unittest.TestCase):

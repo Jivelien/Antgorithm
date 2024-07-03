@@ -9,9 +9,9 @@ class Position:
     y: float
 
     def __add__(self, other):
-        return Position(x=self.x+other.x,
-                        y=self.y+other.y)
+        return Position(x=self.x + other.x,
+                        y=self.y + other.y)
 
     def __sub__(self, other):
-        return Position(x=self.x-other.x,
-                        y=self.y-other.y)
+        return Position(x=self.x - other.x,
+                        y=self.y - other.y)

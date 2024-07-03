@@ -2,8 +2,8 @@ from __future__ import annotations
 
 import math
 
-from anthgorithm.ant_brain.ant_brain import AntBrain, DummyAntBrain
-from anthgorithm.position import Position
+from antgorithm.ant_brain.ant_brain import AntBrain, DummyAntBrain
+from antgorithm.position import Position
 
 
 class Ant:
