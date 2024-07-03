@@ -2,22 +2,32 @@ from __future__ import annotations
 
 import math
 
+from anthgorithm.ant_brain.ant_brain import AntBrain, DummyAntBrain
 from anthgorithm.position import Position
 
 
 class Ant:
-    def __init__(self, position : Position):
+    def __init__(self,
+                 ant_brain: AntBrain = DummyAntBrain(),
+                 position: Position = Position(x=0, y=0),
+                 ):
+        self._ant_brain = ant_brain
         self._position = position
-        self._direction: float = 0
+        self._next_direction: float = 0
 
     @property
-    def position(self) -> Position:
+    def current_position(self) -> Position:
         return self._position
 
     def move(self):
-        x = math.sin(self._direction/180*math.pi)
-        y = math.cos(self._direction/180*math.pi)
-        self._position += Position(x=x,y=y)
+        self._next_direction += self._ant_brain.next_direction_change()
+        next_movement = self.compute_next_movement()
+        self._position += next_movement
+
+    def compute_next_movement(self):
+        x = math.sin(self._next_direction / 180 * math.pi)
+        y = math.cos(self._next_direction / 180 * math.pi)
+        return Position(x=x, y=y)
 
     def rotate(self, angle: float):
-        self._direction += angle
+        self._next_direction += angle
